@@ -18,7 +18,7 @@ clean_data <- function(x) {
 }
 
 #' clean_courses
-#'Clean the dataframe and save it in data/derived-data
+#' Clean the dataframe and save it in data/derived-data
 #'
 #' @param courses a data frame data/raw-data/CoursesVelomagg.csv
 #'
@@ -57,6 +57,16 @@ clean_courses <- function(courses) {
   return(courses)
 }
 
+#' 
+#' Clean, merge station dataframes and save in data/derived-data
+#'
+#' @param station data frame data/raw-data/StationVelomagg.csv
+#' @param coord data frame data/raw-data/DisponibiliteVelomagg.csv
+#'
+#' @return fusion data frame 
+#' @export
+#'
+#' @examples
 clean_station <- function(station, coord) {
   # extraction coordonnées GPS
   coord$x <- sapply(strsplit(coord$geopoint, ","), "[[", 1)

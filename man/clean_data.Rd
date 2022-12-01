@@ -2,7 +2,7 @@
 % Please edit documentation in R/clean_data.R
 \name{clean_data}
 \alias{clean_data}
-\title{CLean data}
+\title{Clean data}
 \usage{
 clean_data(x)
 }
@@ -10,7 +10,7 @@ clean_data(x)
 \item{data}{x l'objet que l'on veut clean}
 }
 \value{
-x l'objet netooyé
+x l'objet nettoyé
 }
 \description{
 fonction pour enlever les majuscules, la ponctuation, les espaces et les accents d'un objet
