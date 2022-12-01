@@ -5,3 +5,6 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^README\.html$
+^.*\.Rproj$
+^\.Rproj\.user$
+^make\.R$
