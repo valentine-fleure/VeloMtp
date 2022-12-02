@@ -63,12 +63,31 @@ La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `
 Pour le mois de `r convert_month(params$month)`
 
 ```{r echo = FALSE}
-course_month = extract_data(Course_velo, params$month)
-plot_temperature(course_month, params$month)
-filename = paste0("temps_temp_dist_", params$month, ".png")
+# course_month = extract_data(Course_velo, params$month)
+# plot_temperature(course_month, params$month)
+# filename = paste0("temps_temp_dist_", params$month, ".png")
+
+#![](`r here::here("outputs",filename)`)
 ```
 
-![](`r here::here("outputs",filename)`)
+```{r echo=FALSE}
+course_month = extract_data(Course_velo, params$month)
+
+course_month = course_month[course_month$Covered.distance <= 1000,]
+course_month = course_month[course_month$Duration <= 20000,]
+
+plot=ggplot(course_month,
+              aes(x = Duration, y = Covered.distance, color = Temperature)) +
+  geom_point(alpha = 0.5) +
+  theme_classic() +
+  xlab("Temps de trajet (min)") +
+  ylab("Distance parcourue (km)")
+
+plot
+```
+
+
+
 
 # Relation entre Stations de départ et stations d'arrivée
 
