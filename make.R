@@ -31,3 +31,5 @@ devtools::load_all(here::here())
 # source(here::here("analyses", "script_X.R"))
 
 source(here::here("analyses","1_prep_data.R"))
+
+source(here::here("analyses", "4_plot_temperature.R"))

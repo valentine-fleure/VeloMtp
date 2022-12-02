@@ -3,4 +3,6 @@
 export(clean_courses)
 export(clean_data)
 export(clean_station)
+export(extract_data)
 export(load_csv)
+export(plot_temperature)

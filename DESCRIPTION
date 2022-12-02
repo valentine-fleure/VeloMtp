@@ -16,3 +16,17 @@ License: GPL-2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2
+Imports: 
+    adehabitatHR,
+    devtools,
+    ggplot2,
+    heatmaply,
+    here,
+    janitor,
+    knitr,
+    leaflet,
+    plotly,
+    stats,
+    stringr,
+    tidyverse,
+    viridis
