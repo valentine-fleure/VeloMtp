@@ -55,8 +55,8 @@ Returnstation <- Data_station(Course_velo, "Return.station",  Fusion) #Données 
 ```
 
 # Distance et Durée 
-La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `r mean(Course_velo$Covered.distance)` km. 
-La durée moyenne d'un trajet avec un velo Velomagg à Montpellier est de `r mean(Course_velo$Duration)` minutes
+La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `r mean(as.numeric(Course_velo$Covered.distance))` km. 
+La durée moyenne d'un trajet avec un velo Velomagg à Montpellier est de `r mean(as.numeric(Course_velo$Duration))` minutes
 
 # L'influence de la température
 
@@ -65,7 +65,7 @@ Pour le mois de `r convert_month(params$month)`
 ```{r echo = FALSE}
 course_month = extract_data(Course_velo, params$month)
 plot_temperature(course_month, params$month)
-filename = paste0("temps_temp_dist_", month, ".png")
+filename = paste0("temps_temp_dist_", params$month, ".png")
 ```
 
 ![Titre](%60r%20here::here(outputs%22,%20filename)%60)
@@ -78,6 +78,7 @@ D'aprés la heatmap suivante :
   - en ligne : les stations d'arrivée
 Les utilisateurs semblent majoritairement redeposé leurs velo là où ils l'ont pris! 
 ```{r echo=FALSE}
+library(tidyverse)
 order_depnumero=Depstation %>% arrange(numero)# arrangement selon numeros 
       
 #### heatmap
@@ -113,6 +114,7 @@ data=Depstation
 
 #### ordre 
 # Departure
+library(tidyverse)
 order_dep=data %>% arrange(desc(n))# arrangement selon n
 order_depnumero=data %>% arrange(numero)# arrangement selon numeros 
 
@@ -125,6 +127,8 @@ knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plu
 ```{r echo=FALSE}
 ### plot graphique 
 PLOT(order_dep,"Nombre de vélos selon les stations de depart" )
+```
+```{r echo=FALSE}
 
 #leaflet  --> faire fonction pour arrivé
 leaflet_map(data, "Stations de depart")
@@ -133,7 +137,7 @@ leaflet_map(data, "Stations de depart")
 ## Les stations d'arrivée 
 #### Les 10 stations d'arrivée les plus utilisées
 ```{r echo=FALSE}
-data=Returnstation
+data=na.omit(Returnstation)
 
 #### ordre 
 # Departure
@@ -150,7 +154,21 @@ knitr::kable(Dep_tab, caption="Nombre de velos à l'arrivé des 10 Stations les 
 ### plot graphique 
 PLOT(order_dep,"Nombre de vélos selon les stations d'arrivé" )
 
+```
+
+```{r}
 #leaflet  --> faire fonction pour arrivé
 leaflet_map(data, "Stations de depart")
+```
+
+# Domaine vitale des utilisateurs 
+```{r echo = FALSE}
+library(ggmap)
+Course_velo2<-Course_velo[Course_velo$new_account==params$person,] 
+
+Fusion <- read.csv2(here::here(file.path("data","derived-data", "Fusion.csv")), sep="")
+
+domaine_vitale(Course_velo2, Fusion)
+
 ```
 

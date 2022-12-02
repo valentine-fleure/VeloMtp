@@ -44,13 +44,13 @@ domaine_vitale <- function (Course_velo2, Fusion){
   ### surface kernel 
   names(Kernel_df)=c("pourcent", "area")
   Kernel_df$area=Kernel_df$area*1e8     # faire *1e8 pour avoir en km2 
-  print(Kernel_df$area)
+  #print(Kernel_df$area)
   
   KDAREAS$id=as.factor(KDAREAS$id)    
   
   ### Plot kernel 
   
-  map <- get_stamenmap(bbox = c(top=43.7, bottom=43.5, right=4, left=3.8), zoom = 13 )
+  map <- ggmap::get_stamenmap(bbox = c(top=43.7, bottom=43.5, right=4, left=3.8), zoom = 13 )
   
   titre=as.character(paste(ID, " - aire du domaine vital :", round(Kernel_df$area[1], digit=2), "km2"))
   color=viridis(6)
