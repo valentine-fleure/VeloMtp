@@ -49,6 +49,14 @@ clean_courses <- function(courses) {
   courses$Return.station <-
     as.numeric(sapply(strsplit(courses$Return.station, split = " "), "[[", 1))
   
+  names(Course_velo)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
+                       "Return.station", "Covered.distance", "Duration", "Temperature")
+
+  
+  #filtre covered distance
+  Course_velo<-Course_velo[Course_velo$Covered.distance>=100,] #on enleve les points avec distance < 100m
+  Course_velo<-Course_velo[Course_velo$Duration>120,]  #on elenvele les durée de moins de 2 min
+  
   write.table(courses,
               here::here(file.path("data/derived-data/Course_velo.csv")),
               col.names = TRUE,
@@ -91,6 +99,11 @@ clean_station <- function(station, coord) {
   coord$Nom[coord$Nom == "suddefrance"] <- "montpelliersuddefrance"
   
   fusion <- merge(coord, station, by = "Nom", all = TRUE)
+  
+  fusion$numero[fusion$numero==0]<-57
+  fusion$numero[fusion$numero==59]<-58
+  
+  names(fusion)=c("Nom", "Nombre.totales.de.places", "y","x", "type_stati"   )
   
   write.table(fusion,
               here::here(file.path("data/derived-data/Fusion.csv")),
