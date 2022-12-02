@@ -18,3 +18,29 @@ extract_data <- function(courses, month) {
                             courses$Departure <= fin_month, ]
   return(courses_month)
 }
+
+#' Title
+#'
+#' @param month str exemple "06"
+#'
+#' @return name str le nom du mois
+#' @export
+#'
+#' @examples
+convert_month <- function(month) {
+  name = dplyr::case_when(
+    month == "01" ~ "janvier",
+    month == "02" ~ "février",
+    month == "03" ~ "mars",
+    month == "04" ~ "avril",
+    month == "05" ~ "mai",
+    month == "06" ~ "juin",
+    month == "07" ~ "juillet",
+    month == "08" ~ "aout",
+    month == "09" ~ "spetembre",
+    month == "10" ~ "octobre",
+    month == "11" ~ "novembre",
+    month == "12" ~ "décembre"
+  )
+  return(name)
+}
