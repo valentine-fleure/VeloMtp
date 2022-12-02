@@ -40,8 +40,8 @@ clean_courses <- function(courses) {
     "Departure.temperature...C."
   )]
   # On enleve les stations vides
-  courses <- courses[courses$Departure.station != "",]
-  courses <- courses[courses$Return.station != "",]
+  courses <- courses[courses$Departure.station != "", ]
+  courses <- courses[courses$Return.station != "", ]
   
   # On recupere les id des stations
   courses$Departure.station <-
@@ -49,32 +49,45 @@ clean_courses <- function(courses) {
   courses$Return.station <-
     as.numeric(sapply(strsplit(courses$Return.station, split = " "), "[[", 1))
   
-  names(courses)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
-                       "Return.station", "Covered.distance", "Duration", "Temperature")
-
+  names(courses) = c(
+    "new_account" ,
+    "Departure",
+    "Return",
+    "Bike",
+    "Departure.station" ,
+    "Return.station",
+    "Covered.distance",
+    "Duration",
+    "Temperature"
+  )
+  
   
   #filtre covered distance
-  courses<-courses[courses$Covered.distance>=100,] #on enleve les points avec distance < 100m
-  courses<-courses[courses$Duration>120,]  #on enleve les durée de moins de 2 min
+  courses <-
+    courses[courses$Covered.distance >= 100, ] #on enleve les points avec distance < 100m
+  courses <-
+    courses[courses$Duration > 120, ]  #on enleve les durée de moins de 2 min
   
-  courses$Duration = round(courses$Duration/60) #Conversion seconde en minute
-  courses$Covered.distance = as.numeric(courses$Covered.distance)/1000 #Conversion metre en km
+  courses$Duration = round(courses$Duration / 60) #Conversion seconde en minute
+  courses$Covered.distance = as.numeric(courses$Covered.distance) / 1000 #Conversion metre en km
   
-  write.table(courses,
-              here::here("data","derived-data","Course_velo.csv"),
-              col.names = TRUE,
-              row.names = FALSE)
+  write.table(
+    courses,
+    here::here("data", "derived-data", "Course_velo.csv"),
+    col.names = TRUE,
+    row.names = FALSE
+  )
   
   return(courses)
 }
 
-#' 
+#'
 #' Clean, merge station dataframes and save in data/derived-data
 #'
 #' @param station data frame data/raw-data/StationVelomagg.csv
 #' @param coord data frame data/raw-data/DisponibiliteVelomagg.csv
 #'
-#' @return fusion data frame 
+#' @return fusion data frame
 #' @export
 #'
 #' @examples
@@ -103,15 +116,17 @@ clean_station <- function(station, coord) {
   
   fusion <- merge(coord, station, by = "Nom", all = TRUE)
   
-  fusion$numero[fusion$numero==0]<-57
-  fusion$numero[fusion$numero==59]<-58
+  fusion$numero[fusion$numero == 0] <- 57
+  fusion$numero[fusion$numero == 59] <- 58
   
-  names(fusion)=c("Nom", "Nombre.totales.de.places", "y","x", "type_stati"   )
+  names(fusion) = c("Nom", "Nombre.totales.de.places", "y", "x", "type_stati")
   
-  write.table(fusion,
-              here::here(file.path("data/derived-data/Fusion.csv")),
-              col.names = TRUE,
-              row.names = FALSE)
+  write.table(
+    fusion,
+    here::here("data", "derived-data", "Fusion.csv"),
+    col.names = TRUE,
+    row.names = FALSE
+  )
   
   return(fusion)
 }
