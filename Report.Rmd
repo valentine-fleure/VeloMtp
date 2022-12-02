@@ -34,27 +34,123 @@ pkgload::load_all()
 source(here::here("analyses","1_prep_data.R"))
 ```
 
+# Les données
 
-# Les données  
+-   La table [`data/raw-data/CoursesVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/CoursesVelomagg.csv) contient les `r length(count.fields(here::here("data", "raw-data", "CoursesVelomagg.csv"), skip = 1))`courses effectuées en Vélomagg entre le 1er janvier 2022 et le 31 aout 2022.
+-   [`data/raw-data/DisponibiliteVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/DisponibiliteVelomagg.csv) contient les metadonnées des `r length(count.fields(here::here("data", "raw-data", "DisponibiliteVelomagg.csv"), skip = 1))` stations (et les disponibiltés au moment du téléchargement)
+-   [`data/raw-data/StationsVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/StationVelomagg.csv) contient d'autres medadonnées sur les stations
 
--  La table [`data/raw-data/CoursesVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/CoursesVelomagg.csv) contient les `r length(count.fields(here::here("data", "raw-data", "CoursesVelomagg.csv"), skip = 1))`courses effectuées en Vélomagg entre le 1er janvier 2022 et le 31 aout 2022.
--  [`data/raw-data/DisponibiliteVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/DisponibiliteVelomagg.csv) contient les metadonnées des `r length(count.fields(here::here("data", "raw-data", "DisponibiliteVelomagg.csv"), skip = 1))` stations (et les disponibiltés au moment du téléchargement)
--  [`data/raw-data/StationsVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/StationVelomagg.csv) contient d'autres medadonnées sur les stations
+```{r}
+#### Fichier data
+path_courses = here::here("data","derived-data", "Course_velo.csv")
+Course_velo = load_csv(path_courses, sep = " ")
 
-# L'influence de la température  
+path_fusion = here::here("data","derived-data", "Fusion.csv")
+Fusion = load_csv(path_fusion, sep = " ")
+
+## fichier derivée
+Depstation <- Data_station(Course_velo, "Departure.station",  Fusion) #Données station de depart
+Returnstation <- Data_station(Course_velo, "Return.station",  Fusion) #Données station d'arrivé
+
+```
+
+# Distance et Durée 
+La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `r mean(Course_velo$Covered.distance)` km. 
+La durée moyenne d'un trajet avec un velo Velomagg à Montpellier est de `r mean(Course_velo$Duration)` minutes
+
+# L'influence de la température
 
 Pour le mois de `r convert_month(params$month)`
+
 ```{r echo = FALSE}
 course_month = extract_data(Course_velo, params$month)
 plot_temperature(course_month, params$month)
 filename = paste0("temps_temp_dist_", month, ".png")
 ```
 
-![Titre](`r here::here("outputs", filename)`)
+![Titre](%60r%20here::here(outputs%22,%20filename)%60)
 
+# Relation entre Stations de départ et stations d'arrivée
+Y a t-il un lien entre les stations de departs de vélo et celles d'arrivés? 
 
+D'aprés la heatmap suivante : 
+  - en colonne : les stations de départ
+  - en ligne : les stations d'arrivée
+Les utilisateurs semblent majoritairement redeposé leurs velo là où ils l'ont pris! 
+```{r echo=FALSE}
+order_depnumero=Depstation %>% arrange(numero)# arrangement selon numeros 
+      
+#### heatmap
+tabCont=as.data.frame.matrix(table(Course_velo$Departure.station, Course_velo$Return.station))
+tabCont=tabCont[1:58, 1:58]
+tabCont=tabCont[-57, -57]
 
+names(tabCont)=order_depnumero$Nom
+rownames(tabCont)=order_depnumero$Nom
 
+heatmaply::heatmaply(as.matrix(tabCont), 
+               dendrogram = "none",
+               xlab = "", ylab = "", 
+               main = "",
+               scale = "column",
+               margins = c(60,100,40,20),
+               grid_color = "white",
+               grid_width = 0.00001,
+               titleX = FALSE,
+               hide_colorbar = TRUE,
+               branches_lwd = 0.1,
+               label_names = c("Station de depart ", "Station d'arrivé ", "Value"),
+               fontsize_row = 5, fontsize_col = 5,
+               labCol = colnames(as.matrix(tabCont)),
+               labRow = rownames(as.matrix(tabCont)),
+               heatmap_layers = theme(axis.line=element_blank()))
+```
 
+## Les stations de départ 
+#### Les 10 stations de départ les plus utilisées
+```{r echo=FALSE}
+data=Depstation
 
+#### ordre 
+# Departure
+order_dep=data %>% arrange(desc(n))# arrangement selon n
+order_depnumero=data %>% arrange(numero)# arrangement selon numeros 
+
+## tab
+Dep_tab=order_dep[1:10,c("Nom", "n")]
+knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plus importantes")
+```
+
+#### Nombre de vélos selon les stations de départ
+```{r echo=FALSE}
+### plot graphique 
+PLOT(order_dep,"Nombre de vélos selon les stations de depart" )
+
+#leaflet  --> faire fonction pour arrivé
+leaflet_map(data, "Stations de depart")
+```
+
+## Les stations d'arrivée 
+#### Les 10 stations d'arrivée les plus utilisées
+```{r echo=FALSE}
+data=Returnstation
+
+#### ordre 
+# Departure
+order_dep=data %>% arrange(desc(n))# arrangement selon n
+order_depnumero=data %>% arrange(numero)# arrangement selon numeros 
+
+## tab
+Dep_tab=order_dep[1:10,c("Nom", "n")]
+knitr::kable(Dep_tab, caption="Nombre de velos à l'arrivé des 10 Stations les plus importantes")
+```
+
+#### Nombre de vélos selon les stations d'arrivé
+```{r echo=FALSE}
+### plot graphique 
+PLOT(order_dep,"Nombre de vélos selon les stations d'arrivé" )
+
+#leaflet  --> faire fonction pour arrivé
+leaflet_map(data, "Stations de depart")
+```
 
