@@ -52,10 +52,9 @@ clean_courses <- function(courses) {
   names(courses)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
                        "Return.station", "Covered.distance", "Duration", "Temperature")
 
-  
   #filtre covered distance
-  Course_velo<-Course_velo[Course_velo$Covered.distance>=100,] #on enleve les points avec distance < 100m
-  Course_velo<-Course_velo[Course_velo$Duration>120,]  #on elenvele les durée de moins de 2 min
+  courses<-courses[courses$Covered.distance>=100,] #on enleve les points avec distance < 100m
+  courses<-courses[courses$Duration>120,]  #on elenvele les durée de moins de 2 min
   
   write.table(courses,
               here::here(file.path("data/derived-data/Course_velo.csv")),
