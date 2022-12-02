@@ -14,15 +14,10 @@ Depstation <- Data_station(Course_velo, "Departure.station",  Fusion)
 Returnstation <- Data_station(Course_velo, "Return.station",  Fusion)
 
 
-#### ordre - 
-
-order_dep=  # arrangement selon n
-order_numero=Depstation %>% arrange(numero) # arrangement selon numeros 
-
-
-
-
-
+#### ordre 
+# Departure
+order_dep=Data_order(Depstation, FALSE, Depstation$n)  # arrangement selon n
+order_depnumero=Data_order(Depstation, TRUE, Depstation$numero) # arrangement selon numeros 
 
 
 #### table - les 10 premiers sites les plus utilisés
@@ -30,9 +25,8 @@ Dep_tab=order_dep[1:10,c("Nom", "n")]
 knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plus importantes")
 
 ### plot graphique 
-library(ggplot2)
-library(viridis)
-
+PLOT(order_dep, )
+#Nombre de vélos selon les stations
 
 hist=ggplot(order_dep, aes(n, stats::reorder(Nom,n), fill=n)) + 
   scale_fill_viridis_c()+

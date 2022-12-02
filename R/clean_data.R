@@ -49,7 +49,7 @@ clean_courses <- function(courses) {
   courses$Return.station <-
     as.numeric(sapply(strsplit(courses$Return.station, split = " "), "[[", 1))
   
-  names(Course_velo)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
+  names(courses)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
                        "Return.station", "Covered.distance", "Duration", "Temperature")
 
   
@@ -103,7 +103,7 @@ clean_station <- function(station, coord) {
   fusion$numero[fusion$numero==0]<-57
   fusion$numero[fusion$numero==59]<-58
   
-  names(fusion) = c("Nom", "Nombre.totales.de.places", "y", "x", "numero")
+  names(fusion) = c("Nom", "Nombre.totales.de.places", "y", "x", "numero", 'typeCB')
 
   
   write.table(fusion,
