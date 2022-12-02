@@ -1,0 +1,60 @@
+---
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+output:
+  html_document:
+    self_contained: true
+    fig_caption: yes
+    theme: united
+    toc: true
+    toc_float:
+      collapsed: true
+params: 
+  month: "06"
+  person: "1586"
+---
+
+---
+title: Vélomagg
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo       = TRUE,
+                      eval       = TRUE,
+                      message    = FALSE,
+                      collapse   = TRUE,
+                      fig.width  = 7,
+                      fig.height = 7,
+                      out.width  = "100%",
+                      dpi        = 300
+)
+pkgload::load_all()
+```
+
+```{r echo=FALSE}
+source(here::here("analyses","1_prep_data.R"))
+```
+
+
+# Les données  
+
+-  La table [`data/raw-data/CoursesVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/CoursesVelomagg.csv) contient les `r length(count.fields(here::here("data", "raw-data", "CoursesVelomagg.csv"), skip = 1))`courses effectuées en Vélomagg entre le 1er janvier 2022 et le 31 aout 2022.
+-  [`data/raw-data/DisponibiliteVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/DisponibiliteVelomagg.csv) contient les metadonnées des `r length(count.fields(here::here("data", "raw-data", "DisponibiliteVelomagg.csv"), skip = 1))` stations (et les disponibiltés au moment du téléchargement)
+-  [`data/raw-data/StationsVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/StationVelomagg.csv) contient d'autres medadonnées sur les stations
+
+# L'influence de la température  
+
+Pour le mois de `r convert_month(params$month)`
+```{r echo = FALSE}
+course_month = extract_data(Course_velo, params$month)
+plot_temperature(course_month, params$month)
+filename = paste0("temps_temp_dist_", month, ".png")
+```
+
+![Titre](`r here::here("outputs", filename)`)
+
+
+
+
+
+
+
