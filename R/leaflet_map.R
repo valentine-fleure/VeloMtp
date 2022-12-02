@@ -17,7 +17,7 @@ pal <- colorNumeric(palette = "Spectral",
 
 return(leaflet(Depstation) %>%
   addTiles() %>%
-  setView(lng = mean(Depstation$x), lat = mean(Depstation$y), zoom = 12)%>%
+  setView(lng = mean(Depstation$x), lat = mean(Depstation$y), zoom = 14)%>%
   addCircleMarkers(lng = ~x, lat = ~y, weight = 1,
                    radius = 7, popup = ~Nom,
                    color = ~pal(Depstation$n), fillOpacity=10)%>%
