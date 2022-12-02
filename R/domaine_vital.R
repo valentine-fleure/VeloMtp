@@ -49,9 +49,12 @@ domaine_vitale <- function (Course_velo2, Fusion){
   KDAREAS$id=as.factor(KDAREAS$id)    
   
   ### Plot kernel 
+  
+  map <- get_stamenmap(bbox = c(top=43.7, bottom=43.5, right=4, left=3.8), zoom = 13 )
+  
   titre=as.character(paste(ID, " - aire du domaine vital :", round(Kernel_df$area[1], digit=2), "km2"))
   color=viridis(6)
-  plot=ggplot(KDAREAS) +
+  plot=ggmap(map)+
     geom_point(data=data,aes(x=x, y=y), alpha=0.2)+
     geom_polygon(data=KDAREAS[KDAREAS$id==95,], aes(x=long, y=lat,  fill=id, colour=id, group=piece), alpha = 0.3)+
     geom_polygon(data=KDAREAS[KDAREAS$id==90,], aes(x=long, y=lat, fill=id,  colour=id, group=piece), alpha = 0.3)+
@@ -63,14 +66,6 @@ domaine_vitale <- function (Course_velo2, Fusion){
     theme_minimal()+
     scale_fill_manual(name="Kernel %",values = c(color[6], color[5], color[4], color[3], color[2]))+
     scale_color_manual(name="Kernel %", values = c(color[6], color[5], color[4], color[3], color[2]))
-  
-  ggmap::register_google(key = "AIzaSyBXPYbxeLq8PAjQ__4MhGqUH4I4jL5HQrc")
-  
-  map<-get_map(location = c(top=43.30, bottom=42.90, right=3.4, left=2.6), maptype = "satellite")
-  
-  leaflet::leaflet() %>% 
-    leaflet::addPolygons(data = KDAREAS)
-  
   
 return(plot)  
 }
