@@ -1,7 +1,7 @@
 ################# 1- PREPARATION DES DONNEES
 
 ### Download Courses velo
-download_course()
+#download_course()
 
 # Courses velo
 path_courses = here::here("data","raw-data", "CoursesVelomagg.csv")
