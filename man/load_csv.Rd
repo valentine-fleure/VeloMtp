@@ -7,8 +7,6 @@
 load_csv(path, sep)
 }
 \arguments{
-\item{path}{}
-
 \item{sep}{}
 }
 \value{
