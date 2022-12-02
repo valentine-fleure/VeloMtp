@@ -1,34 +1,33 @@
+
+
+path_courses = here::here("data","derived-data", "Course_velo.csv")
+Course_velo = load_csv(path_courses, sep = " ")
+
+path_fusion = here::here("data","derived-data", "Fusion.csv")
+Fusion = load_csv(path_fusion, sep = " ")
+
+
 library(tidyverse)
 
-Course_velo <- read.csv2(here::here(file.path("data","derived-data", "Course_velo.csv")), sep="")
-Fusion <- read.csv2(here::here(file.path("data","derived-data", "Fusion.csv")), sep="")
+##### Etude point de depart 
+Depstation <- Data_station(Course_velo, "Departure.station",  Fusion)
+Returnstation <- Data_station(Course_velo, "Return.station",  Fusion)
 
-Fusion$numero[Fusion$numero==0]<-57
-Fusion$numero[Fusion$numero==59]<-58
 
-compt_depstation <- as.data.frame(janitor::tabyl(Course_velo, Departure.station))
-compt_depstation <- compt_depstation[compt_depstation$Departure.station<59,]
+#### ordre - 
 
-names(compt_depstation)<-c("numero", "n", "percent")
-Depstation<-merge(Fusion,compt_depstation,by="numero", all=TRUE)
+order_dep=  # arrangement selon n
+order_numero=Depstation %>% arrange(numero) # arrangement selon numeros 
 
-order_dep=Depstation %>% arrange(desc(n))  # arrangement selon n
-order_numero=Depstation %>% arrange(numero)
 
-names(Course_velo)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
-                     "Return.station", "Covered.distance", "Duration", "Temperature")
 
-Course_velo$Departure<-as.Date(Course_velo$Departure)
 
-Course_velo2<-Course_velo[Course_velo$Departure<="2022-01-31",]  #seulement mois de janvier
 
-#filtre covered idtance 0
-Course_velo<-Course_velo[Course_velo$Covered.distance!=0,]
+
 
 #### table - les 10 premiers sites les plus utilisés
-library(knitr)
 Dep_tab=order_dep[1:10,c("Nom", "n")]
-kable(Dep_tab, caption="Nombre de velos au depart de chaque Station")
+knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plus importantes")
 
 ### plot graphique 
 library(ggplot2)
