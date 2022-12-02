@@ -19,7 +19,11 @@ names(Course_velo)=c("new_account" , "Departure", "Return", "Bike", "Departure.s
                      "Return.station", "Covered.distance", "Duration", "Temperature")
 
 Course_velo$Departure<-as.Date(Course_velo$Departure)
+
 Course_velo2<-Course_velo[Course_velo$Departure<="2022-01-31",]  #seulement mois de janvier
+
+#filtre covered idtance 0
+Course_velo<-Course_velo[Course_velo$Covered.distance!=0,]
 
 #### table - les 10 premiers sites les plus utilisés
 library(knitr)
@@ -41,15 +45,6 @@ hist=ggplot(order_dep, aes(n, stats::reorder(Nom,n), fill=n)) +
 
 plotly::ggplotly(hist)
               
-hist=ggplot(order_dep, aes(n, stats::reorder(Nom,n), fill=n)) + 
-  scale_fill_viridis_c()+
-  geom_bar(stat="identity") +
-  theme_minimal()+
-  labs(title = 'Nombre de vélos selon les stations',
-       x = 'Nombre de vélos', y = "Stations") +
-  theme(axis.text.x = element_text(), legend.position = "none")
-
-plotly::ggplotly(hist)   
       
 #### heatmap
 tabCont=as.data.frame.matrix(table(Course_velo$Departure.station, Course_velo$Return.station))
@@ -94,28 +89,28 @@ leaflet(Depstation) %>%
                    radius = 7, popup = ~Nom,
                    color = ~pal(Depstation$n), fillOpacity=10)%>%
   addLegend("topleft", pal = pal, values = ~Depstation$n,
-            title = "Year SB",
+            title = "Nombre de velos",
             opacity = 1)%>%
   addLabelOnlyMarkers(~Depstation$x, ~Depstation$y, label =  ~as.character(Depstation$Nom), 
                       labelOptions = labelOptions(noHide = T, direction = 'top', textOnly = T))
 
-# trop moche --> trop de site
-library(ggridges)
-library(hrbrthemes)
-Course_velo2$Departure.station=as.factor(Course_velo2$Departure.station)
-
-ggplot(Course_velo2, aes(x = Covered.distance, y = Departure.station)) +
-  geom_density_ridges()
-  
-  
-  
-  
-
-  
-  library(ggraph)
-  ggraph(Course_velo2, layout = 'dendrogram', circular = TRUE) + 
-    geom_conn_bundle(data = get_con(from = Course_velo2$Departure.station, to = Course_velo2$Return.station), alpha=0.2, colour="skyblue", tension = .5) + 
-    geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +
-    theme_void()
+# # trop moche --> trop de site
+# library(ggridges)
+# library(hrbrthemes)
+# Course_velo2$Departure.station=as.factor(Course_velo2$Departure.station)
+# 
+# ggplot(Course_velo2, aes(x = Covered.distance, y = Departure.station)) +
+#   geom_density_ridges()
+#   
+#   
+#   
+#   
+# 
+#   
+#   library(ggraph)
+#   ggraph(Course_velo2, layout = 'dendrogram', circular = TRUE) + 
+#     geom_conn_bundle(data = get_con(from = Course_velo2$Departure.station, to = Course_velo2$Return.station), alpha=0.2, colour="skyblue", tension = .5) + 
+#     geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +
+#     theme_void()
 
 

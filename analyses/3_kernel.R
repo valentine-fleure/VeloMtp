@@ -1,6 +1,6 @@
 #domaine vitale 
 Course_velo <- read.csv2(here::here(file.path("data","derived-data", "Course_velo.csv")), sep="")
-Course_velo2<-Course_velo[Course_velo$Departure<="2022-01-31",] 
+Course_velo2<-Course_velo[Course_velo$new_account<="2022-01-31",] 
 
 kernel=kernelUD(SpatialPoints(data[,c("x","y")]),h="href", grid=300)
 
