@@ -103,7 +103,7 @@ clean_station <- function(station, coord) {
   fusion$numero[fusion$numero==0]<-57
   fusion$numero[fusion$numero==59]<-58
   
-  names(fusion)=c("Nom", "Nombre.totales.de.places", "y","x", "type_stati"   )
+  names(fusion)=c("Nom", "Nombre.totales.de.places", "y","x", "numero")
   
   write.table(fusion,
               here::here(file.path("data/derived-data/Fusion.csv")),
