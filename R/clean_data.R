@@ -49,16 +49,19 @@ clean_courses <- function(courses) {
   courses$Return.station <-
     as.numeric(sapply(strsplit(courses$Return.station, split = " "), "[[", 1))
   
-  names(Course_velo)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
+  names(courses)=c("new_account" , "Departure", "Return", "Bike", "Departure.station" ,      
                        "Return.station", "Covered.distance", "Duration", "Temperature")
 
   
   #filtre covered distance
-  Course_velo<-Course_velo[Course_velo$Covered.distance>=100,] #on enleve les points avec distance < 100m
-  Course_velo<-Course_velo[Course_velo$Duration>120,]  #on elenvele les durée de moins de 2 min
+  courses<-courses[courses$Covered.distance>=100,] #on enleve les points avec distance < 100m
+  courses<-courses[courses$Duration>120,]  #on enleve les durée de moins de 2 min
+  
+  courses$Duration = round(courses$Duration/60) #Conversion seconde en minute
+  courses$Covered.distance = as.numeric(courses$Covered.distance)/1000 #Conversion metre en km
   
   write.table(courses,
-              here::here(file.path("data/derived-data/Course_velo.csv")),
+              here::here("data","derived-data","Course_velo.csv"),
               col.names = TRUE,
               row.names = FALSE)
   
