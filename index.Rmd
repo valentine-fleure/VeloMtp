@@ -40,7 +40,7 @@ source(here::here("analyses","1_prep_data.R"))
 -   [`data/raw-data/DisponibiliteVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/DisponibiliteVelomagg.csv) contient les metadonnées des `r length(count.fields(here::here("data", "raw-data", "DisponibiliteVelomagg.csv"), skip = 1))` stations (et les disponibiltés au moment du téléchargement)
 -   [`data/raw-data/StationsVelomagg.csv`](https://github.com/valentine-fleure/VeloMtp/blob/main/data/raw-data/StationVelomagg.csv) contient d'autres medadonnées sur les stations
 
-```{r}
+```{r echo=FALSE}
 #### Fichier data
 path_courses = here::here("data","derived-data", "Course_velo.csv")
 Course_velo = load_csv(path_courses, sep = " ")
@@ -54,9 +54,9 @@ Returnstation <- Data_station(Course_velo, "Return.station",  Fusion) #Données 
 
 ```
 
-# Distance et Durée 
-La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `r mean(as.numeric(Course_velo$Covered.distance))` km. 
-La durée moyenne d'un trajet avec un velo Velomagg à Montpellier est de `r mean(as.numeric(Course_velo$Duration))` minutes
+# Distance et Durée
+
+La distance moyenne parcourue par les utilisateurs de vélo à Montpellier est `r mean(as.numeric(Course_velo$Covered.distance))` km. La durée moyenne d'un trajet avec un velo Velomagg à Montpellier est de `r mean(as.numeric(Course_velo$Duration))` minutes
 
 # L'influence de la température
 
@@ -68,15 +68,14 @@ plot_temperature(course_month, params$month)
 filename = paste0("temps_temp_dist_", params$month, ".png")
 ```
 
-![Titre](%60r%20here::here(outputs%22,%20filename)%60)
+![](`r here::here("outputs",filename)`)
 
 # Relation entre Stations de départ et stations d'arrivée
-Y a t-il un lien entre les stations de departs de vélo et celles d'arrivés? 
 
-D'aprés la heatmap suivante : 
-  - en colonne : les stations de départ
-  - en ligne : les stations d'arrivée
-Les utilisateurs semblent majoritairement redeposé leurs velo là où ils l'ont pris! 
+Y a t-il un lien entre les stations de departs de vélo et celles d'arrivés?
+
+D'aprés la heatmap suivante : - en colonne : les stations de départ - en ligne : les stations d'arrivée Les utilisateurs semblent majoritairement redeposé leurs velo là où ils l'ont pris!
+
 ```{r echo=FALSE}
 library(tidyverse)
 order_depnumero=Depstation %>% arrange(numero)# arrangement selon numeros 
@@ -107,8 +106,10 @@ heatmaply::heatmaply(as.matrix(tabCont),
                heatmap_layers = theme(axis.line=element_blank()))
 ```
 
-## Les stations de départ 
+## Les stations de départ
+
 #### Les 10 stations de départ les plus utilisées
+
 ```{r echo=FALSE}
 data=Depstation
 
@@ -124,18 +125,22 @@ knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plu
 ```
 
 #### Nombre de vélos selon les stations de départ
+
 ```{r echo=FALSE}
 ### plot graphique 
 PLOT(order_dep,"Nombre de vélos selon les stations de depart" )
 ```
+
 ```{r echo=FALSE}
 
 #leaflet  --> faire fonction pour arrivé
 leaflet_map(data, "Stations de depart")
 ```
 
-## Les stations d'arrivée 
+## Les stations d'arrivée
+
 #### Les 10 stations d'arrivée les plus utilisées
+
 ```{r echo=FALSE}
 data=na.omit(Returnstation)
 
@@ -150,6 +155,7 @@ knitr::kable(Dep_tab, caption="Nombre de velos à l'arrivé des 10 Stations les 
 ```
 
 #### Nombre de vélos selon les stations d'arrivé
+
 ```{r echo=FALSE}
 ### plot graphique 
 PLOT(order_dep,"Nombre de vélos selon les stations d'arrivé" )
@@ -161,7 +167,8 @@ PLOT(order_dep,"Nombre de vélos selon les stations d'arrivé" )
 leaflet_map(data, "Stations de depart")
 ```
 
-# Domaine vitale des utilisateurs 
+# Domaine vitale des utilisateurs
+
 ```{r echo = FALSE}
 library(ggmap)
 Course_velo2<-Course_velo[Course_velo$new_account==params$person,] 
@@ -171,4 +178,3 @@ Fusion <- read.csv2(here::here(file.path("data","derived-data", "Fusion.csv")), 
 domaine_vitale(Course_velo2, Fusion)
 
 ```
-
