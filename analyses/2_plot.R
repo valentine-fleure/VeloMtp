@@ -6,46 +6,14 @@ Course_velo = load_csv(path_courses, sep = " ")
 path_fusion = here::here("data","derived-data", "Fusion.csv")
 Fusion = load_csv(path_fusion, sep = " ")
 
-
-library(tidyverse)
-
-##### Etude point de depart 
-Depstation <- Data_station(Course_velo, "Departure.station",  Fusion)
-Returnstation <- Data_station(Course_velo, "Return.station",  Fusion)
-
-
-#### ordre 
-# Departure
-order_dep=Data_order(Depstation, FALSE, Depstation$n)  # arrangement selon n
-order_depnumero=Data_order(Depstation, TRUE, Depstation$numero) # arrangement selon numeros 
-
-
-#### table - les 10 premiers sites les plus utilisés
-Dep_tab=order_dep[1:10,c("Nom", "n")]
-knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plus importantes")
-
-### plot graphique 
-PLOT(order_dep, )
-#Nombre de vélos selon les stations
-
-hist=ggplot(order_dep, aes(n, stats::reorder(Nom,n), fill=n)) + 
-  scale_fill_viridis_c()+
-  geom_bar(stat="identity") +
-  theme_minimal()+
-  labs(title = 'Nombre de vélos selon les stations',
-       x = 'Nombre de vélos', y = "Stations") +
-  theme(axis.text.x = element_text(), legend.position = "none")
-
-plotly::ggplotly(hist)
-              
       
 #### heatmap
 tabCont=as.data.frame.matrix(table(Course_velo$Departure.station, Course_velo$Return.station))
 tabCont=tabCont[1:58, 1:58]
 tabCont=tabCont[-57, -57]
 
-names(tabCont)=order_numero$Nom
-rownames(tabCont)=order_numero$Nom
+names(tabCont)=order_depnumero$Nom
+rownames(tabCont)=order_depnumero$Nom
 
 library(heatmaply)
 heatmaply(as.matrix(tabCont), 
@@ -65,45 +33,29 @@ heatmaply(as.matrix(tabCont),
                labRow = rownames(as.matrix(tabCont)),
                heatmap_layers = theme(axis.line=element_blank()))
 
+library(tidyverse)
+
+##### Etude point de depart - ppint d'arrivé
+Depstation <- Data_station(Course_velo, "Departure.station",  Fusion)
+Returnstation <- Data_station(Course_velo, "Return.station",  Fusion)
+
+data=Depstation
+
+#### ordre 
+# Departure
+order_dep=data %>% arrange(desc(n))# arrangement selon n
+order_depnumero=data %>% arrange(numero)# arrangement selon numeros 
+
+#### table - les 10 premiers sites les plus utilisés
+Dep_tab=order_dep[1:10,c("Nom", "n")]
+knitr::kable(Dep_tab, caption="Nombre de velos au départ des 10 Station les plus importantes")
+
+### plot graphique 
+PLOT(order_dep,"Nombre de vélos selon les stations de depart" )
 
 #leaflet  --> faire fonction pour arrivé
-Depstation$x=as.numeric(Depstation$x)
-Depstation$y=as.numeric(Depstation$y)
-mean(Depstation$x)
+leaflet_map(data, "Stations de depart")
 
-library(leaflet)
-pal <- colorNumeric(palette = "Spectral",
-                    domain = Depstation$n)
 
-leaflet(Depstation) %>%
-  addTiles() %>%
-  setView(lng = mean(Depstation$y), lat = mean(Depstation$x), zoom = 15)%>%
-  addCircleMarkers(lng = ~y, lat = ~x, weight = 1,
-                   radius = 7, popup = ~Nom,
-                   color = ~pal(Depstation$n), fillOpacity=10)%>%
-  addLegend("topleft", pal = pal, values = ~Depstation$n,
-            title = "Nombre de velos",
-            opacity = 1)%>%
-  addLabelOnlyMarkers(~Depstation$x, ~Depstation$y, label =  ~as.character(Depstation$Nom), 
-                      labelOptions = labelOptions(noHide = T, direction = 'top', textOnly = T))
-
-# # trop moche --> trop de site
-# library(ggridges)
-# library(hrbrthemes)
-# Course_velo2$Departure.station=as.factor(Course_velo2$Departure.station)
-# 
-# ggplot(Course_velo2, aes(x = Covered.distance, y = Departure.station)) +
-#   geom_density_ridges()
-#   
-#   
-#   
-#   
-# 
-#   
-#   library(ggraph)
-#   ggraph(Course_velo2, layout = 'dendrogram', circular = TRUE) + 
-#     geom_conn_bundle(data = get_con(from = Course_velo2$Departure.station, to = Course_velo2$Return.station), alpha=0.2, colour="skyblue", tension = .5) + 
-#     geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +
-#     theme_void()
 
 

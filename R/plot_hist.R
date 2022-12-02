@@ -9,9 +9,10 @@
 #'
 PLOT <- function (data, title){
   library(ggplot2)
+  library(viridis)
 
   hist=ggplot(data, aes(n, stats::reorder(Nom,n), fill=n)) + 
-    viridis::scale_fill_viridis_c()+
+    scale_fill_viridis_c()+
     geom_bar(stat="identity") +
     theme_minimal()+
     labs(title = title,
